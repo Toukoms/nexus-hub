@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --primary-color: #8866C5;
+    --secondary-color: #271D3B;
+    --white: #f8f9fb
+}
+
+
+body {
+    @apply w-screen min-h-screen min-w-full overflow-x-hidden bg-[var(--white)] text-black;
+}
