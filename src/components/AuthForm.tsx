@@ -6,12 +6,13 @@ import { FcGoogle } from "react-icons/fc";
 
 type Props = {
   type: "signIn" | "signUp";
+  isLoading?: boolean;
 } & React.DetailedHTMLProps<
   React.FormHTMLAttributes<HTMLFormElement>,
   HTMLFormElement
 >;
 
-const AuthForm = ({ type, ...props }: Props) => {
+const AuthForm = ({ type, isLoading=false, ...props }: Props) => {
   const variant = {
     question: {
       signIn: "Don't have an account? ",
@@ -74,29 +75,42 @@ const AuthForm = ({ type, ...props }: Props) => {
         {type === "signUp" && (
           <div className="flex gap-2">
             <Input
+              id="lastname"
               type="text"
               label="last name"
               name="lastName"
               required={true}
+              disabled={isLoading}
             />
             <Input
+              id="firstname"
               type="text"
               label="first name"
               name="firstName"
               required={true}
+              disabled={isLoading}
             />
           </div>
         )}
-        <Input type="email" label="email" name="email" required={true} />
         <Input
+          id="email"
+          type="email"
+          label="email"
+          name="email"
+          required={true}
+          disabled={isLoading}
+        />
+        <Input
+          id="password"
           type="password"
           label="password"
           name="password"
           required={true}
+          disabled={isLoading}
         />
         <div className="h-6"></div>
 
-        <Button>{variant.buttonName[type]}</Button>
+        <Button disabled={isLoading}>{variant.buttonName[type]}</Button>
         {type === "signIn" && (
           <span className="flex justify-evenly items-center h-2 text-neutral-800">
             <hr className="w-20 border-neutral-800" /> Or

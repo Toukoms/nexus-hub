@@ -1,8 +1,9 @@
 import "./globals.css";
+import "./react-toastify.globals.css";
 
 export const metadata = {
-  title: "Chat",
-  description: "Realtime chat", 
+  title: "NexusHub",
+  description: "Realtime chat",
 };
 
 export default function RootLayout({

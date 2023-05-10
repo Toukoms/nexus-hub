@@ -6,10 +6,13 @@ type Props = {} & React.DetailedHTMLProps<
 > &
   React.PropsWithChildren;
 
-const Button: React.FC<Props> = ({ children }) => {
+const Button: React.FC<Props> = ({ children, disabled, ...props }) => {
   return (
     <button
-      className="
+      {...props}
+      disabled={disabled}
+      className={
+        `
         flex
         justify-center
         items-center
@@ -17,9 +20,9 @@ const Button: React.FC<Props> = ({ children }) => {
         border-2
         border-black
         border-opacity-50
-        p-4
+        p-2
         min-h-14
-        rounded-md
+        rounded-xl
         bg-black
         bg-opacity-75
         uppercase
@@ -31,7 +34,8 @@ const Button: React.FC<Props> = ({ children }) => {
         hover:bg-opacity-75
         hover:border-black
         hover:border-opacity-50
-        "
+        ` + (disabled && "opacity-75")
+      }
     >
       {children}
     </button>
