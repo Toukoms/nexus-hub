@@ -20,26 +20,20 @@ const SignUpPages = (props: Props) => {
 
     formData.forEach((value, key) => (data[key] = String(value)));
 
-    try {
-      axios
-        .post("/api/register", data)
-        .then((res) => {
-          if (res.status === 201) {
-            toast.success("Resgistered successfully");
-            const data = JSON.parse(res.data)
-            signIn("credentials", data);
-          }
-        })
-        .catch((err) => {
-          if (err.resposnse.data)
-          toast.error(err.response.data.message);
-          console.log(err.messsage)
-          setIsLoading(false);
-        });
-    } catch (error) {
-      console.log(error);
-      setIsLoading(false);
-    }
+    axios
+      .post("/api/register", data)
+      .then((res) => {
+        if (res.status === 201) {
+          toast.success("Resgistered successfully");
+          const data = JSON.parse(res.data);
+          signIn("credentials", data);
+        }
+      })
+      .catch((err) => {
+        console.log(err.response);
+        if (err.resposnse) toast.error(err.response.data.message);
+        setIsLoading(false);
+      });
   };
 
   return (

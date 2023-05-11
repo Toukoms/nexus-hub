@@ -35,6 +35,7 @@ const Input: React.FC<Props> = ({ id, label, type, disabled, ...props }) => {
         {...props}
         id={id}
         type={innerType}
+        disabled={disabled}
         className={`
           rounded-md
           px-6
