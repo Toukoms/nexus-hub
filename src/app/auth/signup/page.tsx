@@ -2,14 +2,23 @@
 
 import AuthForm from "@/components/AuthForm";
 import axios from "axios";
-import { signIn } from "next-auth/react";
-import React, { FormEvent, useState } from "react";
+import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import React, { FormEvent, useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 
 type Props = {};
 
 const SignUpPages = (props: Props) => {
+  const router = useRouter();
+  const session = useSession();
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (session.status === "authenticated") {
+      router.push("/");
+    }
+  }, [session.status]);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -20,20 +29,40 @@ const SignUpPages = (props: Props) => {
 
     formData.forEach((value, key) => (data[key] = String(value)));
 
-    axios
-      .post("/api/register", data)
-      .then((res) => {
+    toast.promise(
+      async () => {
+        const res = await axios.post("/api/register", data);
         if (res.status === 201) {
-          toast.success("Resgistered successfully");
-          const data = JSON.parse(res.data);
-          signIn("credentials", data);
+          setIsLoading(false);
+        } else if (res.data.response !== undefined) {
+          setIsLoading(false)
+          throw new Error(res.data.response.message);
         }
-      })
-      .catch((err) => {
-        console.log(err.response);
-        if (err.resposnse) toast.error(err.response.data.message);
-        setIsLoading(false);
-      });
+
+      },
+      {
+        pending: "Checking data",
+        success: "Resgistered successfully",
+      }
+    );
+
+    if (isLoading) {
+      router.push('/auth/signin')
+    }
+
+    // axios
+    //   .post("/api/register", data)
+    //   .then((res) => {
+    //     if (res.status === 201) {
+    //       toast.success("Resgistered successfully");
+    //       setIsLoading(false);
+    //       router.push("/");
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     if (err.response !== undefined) toast.error(err.response.data.message);
+    //     setIsLoading(false);
+    //   });
   };
 
   return (
