@@ -1,7 +1,7 @@
 import AuthContext from "@/context/AuthContext";
 import "./globals.css";
-// import "./react-toastify.globals.css";
-import '../../node_modules/react-toastify/dist/ReactToastify.css'
+import "../../node_modules/react-toastify/dist/ReactToastify.css";
+import ToastContext from "@/context/ToastContext";
 
 export const metadata = {
   title: "NexusHub",
@@ -17,7 +17,10 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <main className="w-full h-full">
-          <AuthContext>{children}</AuthContext>
+          <AuthContext>
+            <ToastContext />
+            {children}
+          </AuthContext>
         </main>
       </body>
     </html>

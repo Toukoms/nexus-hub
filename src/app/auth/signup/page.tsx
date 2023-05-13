@@ -5,7 +5,7 @@ import axios from "axios";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React, { FormEvent, useEffect, useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 
 type Props = {};
 
@@ -29,46 +29,31 @@ const SignUpPages = (props: Props) => {
 
     formData.forEach((value, key) => (data[key] = String(value)));
 
-    toast.promise(
-      async () => {
-        const res = await axios.post("/api/register", data);
+    axios
+      .post("/api/register", data)
+      .then((res) => {
         if (res.status === 201) {
-          setIsLoading(false);
-        } else if (res.data.response !== undefined) {
-          setIsLoading(false)
-          throw new Error(res.data.response.message);
+          toast.success("Resgistered successfully");
+          toast.promise(
+            signIn("credentials", {
+              email: data.email,
+              password: data.password,
+              callbackUrl: "/",
+              redirect: false,
+            }),
+            { pending: "Login...", success: "Login successfully", error: "Something went wrong"}
+          );
         }
-
-      },
-      {
-        pending: "Checking data",
-        success: "Resgistered successfully",
-      }
-    );
-
-    if (isLoading) {
-      router.push('/auth/signin')
-    }
-
-    // axios
-    //   .post("/api/register", data)
-    //   .then((res) => {
-    //     if (res.status === 201) {
-    //       toast.success("Resgistered successfully");
-    //       setIsLoading(false);
-    //       router.push("/");
-    //     }
-    //   })
-    //   .catch((err) => {
-    //     if (err.response !== undefined) toast.error(err.response.data.message);
-    //     setIsLoading(false);
-    //   });
+      })
+      .catch((err) => {
+        if (err.response !== undefined) toast.error(err.response.data.message);
+      })
+      .finally(() => setIsLoading(false));
   };
 
   return (
     <div className="w-screen h-full bg-neutral-800 bg-opacity-50">
       <AuthForm type="signUp" onSubmit={handleSubmit} isLoading={isLoading} />
-      <ToastContainer />
     </div>
   );
 };

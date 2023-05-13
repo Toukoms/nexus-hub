@@ -42,7 +42,7 @@ export const authOptions: AuthOptions = {
         );
 
         if (!isPasswordCorrect) {
-          throw new Error("Password does not match");
+          throw new Error("Invalid password");
         }
 
         return user;
