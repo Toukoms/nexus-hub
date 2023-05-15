@@ -2,14 +2,23 @@
 
 import AuthForm from "@/components/AuthForm";
 import axios from "axios";
-import { signIn } from "next-auth/react";
-import React, { FormEvent, useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
+import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import React, { FormEvent, useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 type Props = {};
 
 const SignUpPages = (props: Props) => {
+  const router = useRouter();
+  const session = useSession();
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (session.status === "authenticated") {
+      router.push("/");
+    }
+  }, [session.status]);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -25,21 +34,26 @@ const SignUpPages = (props: Props) => {
       .then((res) => {
         if (res.status === 201) {
           toast.success("Resgistered successfully");
-          const data = JSON.parse(res.data);
-          signIn("credentials", data);
+          toast.promise(
+            signIn("credentials", {
+              email: data.email,
+              password: data.password,
+              callbackUrl: "/",
+              redirect: false,
+            }),
+            { pending: "Login...", success: "Login successfully", error: "Something went wrong"}
+          );
         }
       })
       .catch((err) => {
-        console.log(err.response);
-        if (err.resposnse) toast.error(err.response.data.message);
-        setIsLoading(false);
-      });
+        if (err.response !== undefined) toast.error(err.response.data.message);
+      })
+      .finally(() => setIsLoading(false));
   };
 
   return (
     <div className="w-screen h-full bg-neutral-800 bg-opacity-50">
       <AuthForm type="signUp" onSubmit={handleSubmit} isLoading={isLoading} />
-      <ToastContainer />
     </div>
   );
 };

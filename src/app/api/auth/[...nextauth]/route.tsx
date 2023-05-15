@@ -42,7 +42,7 @@ export const authOptions: AuthOptions = {
         );
 
         if (!isPasswordCorrect) {
-          throw new Error("Password does not match");
+          throw new Error("Invalid password");
         }
 
         return user;
@@ -52,7 +52,7 @@ export const authOptions: AuthOptions = {
   pages: {
     signIn: '/auth/signin',
   },
-  debug: process.env.NODE_ENV === 'development',
+  debug: process.env.NODE_ENV !== 'production',
   session: {
     strategy: 'jwt'
   },
